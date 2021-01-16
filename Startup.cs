@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace RentalKendaraan_20180140013
 {
@@ -43,6 +44,21 @@ namespace RentalKendaraan_20180140013
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultUI()
                 .AddEntityFrameworkStores<RentKendaraanContext>().AddDefaultTokenProviders();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("readOnlyPolicy",
+                    builder => builder.RequireRole("Admin", "Manager", "Kasir"));
+                options.AddPolicy("writePolicy",
+                    builder => builder.RequireRole("Admin", "Kasir"));
+                options.AddPolicy("editPolicy",
+                    builder => builder.RequireRole("Admin", "Kasir"));
+                options.AddPolicy("deletePolicy",
+                    builder => builder.RequireRole("Admin", "Kasir"));
+            });
+
+            services.AddScoped<Peminjaman>();
+            services.AddScoped<Pengembalian>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
